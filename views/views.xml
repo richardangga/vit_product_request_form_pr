@@ -17,9 +17,20 @@
                             class="oe_highlight"
                             attrs="{'invisible':['|',('state','!=','draft')]}"/>
                 </xpath>
-                <xpath expr="//button[@name='action_create_pr']" position="replace">            
-                    <button string="Create Bid" type="object" name="action_create_pr_baru"
-						 	states="open" groups="purchase.group_purchase_manager"/>      
+                <!-- <button name="action_create_po" position="after">
+                    <button name="action_create_po"
+                    string="Create RfQ"
+                    states="open" groups="purchase.group_purchase_manager"
+                    type="object" invisible="1"/>
+                </button> -->  
+                <xpath expr="//form/header/button[@name='action_confirm']" position="before">
+                    <button string="Request Approval" type="object" name="action_confirm_request" states="open" groups="purchase.group_purchase_manager"/>
+                </xpath>
+                <xpath expr="//form/header/button[@name='action_draft']" position="after">       
+                    <button string="Create Review" type="object" name="action_onprogress" states="onprogress" groups="purchase.group_purchase_manager"/>
+                    <button string="Create Budget Confirmation" type="object" name="action_reviewed" states="reviewed" groups="purchase.group_purchase_manager"/>
+                    <button string="Create Approval" type="object" name="action_budgetconfirm" states="budgetconfirm" groups="purchase.group_purchase_manager"/>
+                    <button string="Print PR" type="object" name="action_approved" states="approved" groups="purchase.group_purchase_manager"/>      
                 </xpath>
                 <xpath expr="//form/header/field[@name='state']" position="replace">
                     <field name="state" widget="statusbar" statusbar_visible="draft,open,onprogress,reviewed,budgetconfirm,approved,done"/>
@@ -45,20 +56,33 @@
                 <field name="category_id" position="before">
                     <field name="department_id" options="{'no_create':True,'no_open':True}" string="Unit"/>
                 </field>
-                <!-- <field name="category_id" position="replace">
-                    <field name="category_id" options="{'no_create':True,'no_open':True}" invisible="1"/>
-                </field> -->
-                <!-- <field name="warehouse_id" position="replace">
-                    <field name="warehouse_id" options="{'no_create':True,'no_open':True}" invisible="1"/>
-                </field> -->
                 <field name="business_id" position="replace">
                     <field name="business_id" invisible="1"/>
                 </field>
                 <field name="partner_id" position="replace">
                     <field name="partner_id" invisible="1"/>
                 </field>
-                
+                <!-- <field name="category_id" position="replace">
+                    <field name="category_id" options="{'no_create':True,'no_open':True}" invisible="1"/>
+                </field> -->
+                <!-- <field name="warehouse_id" position="replace">
+                    <field name="warehouse_id" options="{'no_create':True,'no_open':True}" invisible="1"/>
+                </field> -->
             </field>
         </record>
+        <record id="inherit_line_form" model="ir.ui.view">    
+            <field name="name">inherit_line_form</field>    
+            <field name="model">vit.product.request.line</field>    
+            <field name="inherit_id" ref="vit_product_request.view_product_request_line_form"/>    
+            <field name="arch" type="xml">   
+                <xpath expr="//form/sheet/group/group[2]/field[@name='location_id']" position="replace">
+                    <field name="location_id"/>
+                </xpath>
+                <xpath expr="//form/sheet/group/group[2]/field[@name='business_id']" position="replace">
+                    <field name="business_id" />
+                </xpath>
+            </field>
+        </record>
+        <!-- <record id="" -->
     </data>
 </odoo>
