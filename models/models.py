@@ -35,12 +35,10 @@ class ProductRequestFormPr(models.Model):
     budgeted_by = fields.Many2one(comodel_name='hr.employee', states={'draft':[('readonly',True)],'open':[('readonly',True)],'onprogress':[('readonly',True)],'reviewed':[('readonly',False),('required',True)],'budgetconfirm':[('readonly',True)],'approved':[('readonly',True)],'done':[('readonly',True)],'reject':[('readonly',True)]},string='Budget Confirmed')
     approved_by = fields.Many2one(comodel_name='hr.employee', states={'draft':[('readonly',True)],'open':[('readonly',True)],'onprogress':[('readonly',True)],'reviewed':[('readonly',True)],'budgetconfirm':[('readonly',False),('required',True)],'approved':[('readonly',True)],'done':[('readonly',True)],'reject':[('readonly',True)]},string='Approved by')
     state = fields.Selection(PR_STATES,'Status',readonly=True,required=True, default='draft',track_visibility='onchange')
-    analytic_account = fields.Many2one(comodel_name='account.analytic.account', string="Analytic Account", related="department_id.analytic_account_id")
-    category_id = fields.Many2one(comodel_name='product.category', string='Product Category',
-        required=False,
-        readonly=True,
-        states={'draft':[('readonly',False)]},track_visibility='onchange'
-        )
+    # analytic_account = fields.Many2one(comodel_name='account.analytic.account', string="Analytic Account", related="department_id.analytic_account_id")
+    analytic_tag_ids = fields.Many2one(comodel_name='account.analytic.tag', string='Location', domain=[('analytic_dimension_id.name','=','LOCATION')])
+    bisnis = fields.Many2one(comodel_name='account.analytic.tag', string='Business', domain=[('analytic_dimension_id.name','=','BUSINESS')])
+    category_id = fields.Many2one(comodel_name='product.category', string='Product Category', required=False, readonly=True, states={'draft':[('readonly',False)]},track_visibility='onchange')
     # product_request_aproval_level_ids = fields.One2many(string='Approval Level Line',ondelete="cascade", copy= True,)
     
     @api.model
@@ -84,6 +82,14 @@ class ProductRequestFormPr(models.Model):
     def action_confirm(self,body):
         #set to "open" approved state
         # body = _("PR confirmed")
+        # self.env['mail.message'].create({'message_type':"notification",
+        #         "subtype": self.env.ref("mail.mt_comment").id, # subject type
+        #         'body': "Message body",
+        #         'subject': "Message subject",
+        #         'needaction_partner_ids': [(4, self.user_id.requesto_id.id)],   # partner to whom you send notification
+        #         'model': self._name,
+        #         'res_id': self.id,
+        #         })
         self.send_followers(body)
         self.send_to_channel(body)
         self.update_line_state(PR_STATES[1][0])
