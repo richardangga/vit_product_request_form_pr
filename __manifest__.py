@@ -3,15 +3,14 @@
     'name': "vit_product_request_form_pr",
 
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+        Field Description, Requester ID, Approval""",
 
     'description': """
-        Long description of module's purpose
+        Field Description, Requester ID, Approval
     """,
 
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+    'author': "Richard Angga",
+    'website': "richard.angga51@gmail.com",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/12.0/odoo/addons/base/data/ir_module_category_data.xml

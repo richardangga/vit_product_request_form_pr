@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 from odoo import tools
 from odoo import models, fields, api, _
 import time
@@ -22,7 +22,7 @@ PR_LINE_STATES =[('draft','Draft'),
     ('reviewed','Reviewed'),
     ('budgetconfirm','Budgeted'),
     ('approved','Approved'),
-    ('done','Done'),# Call for Bids = PO created / done
+    ('done','Done'),
     ('reject','Rejected')]
 
 class ProductRequestFormPr(models.Model):
@@ -36,38 +36,34 @@ class ProductRequestFormPr(models.Model):
     approved_by = fields.Many2one(comodel_name='hr.employee', states={'draft':[('readonly',True)],'open':[('readonly',True)],'onprogress':[('readonly',True)],'reviewed':[('readonly',True)],'budgetconfirm':[('readonly',False),('required',True)],'approved':[('readonly',True)],'done':[('readonly',True)],'reject':[('readonly',True)]},string='Approved by')
     state = fields.Selection(PR_STATES,'Status',readonly=True,required=True, default='draft',track_visibility='onchange')
     # analytic_account = fields.Many2one(comodel_name='account.analytic.account', string="Analytic Account", related="department_id.analytic_account_id")
-    analytic_tag_ids = fields.Many2one(comodel_name='account.analytic.tag', string='Location', domain=[('analytic_dimension_id.name','=','LOCATION')])
-    bisnis = fields.Many2one(comodel_name='account.analytic.tag', string='Business', domain=[('analytic_dimension_id.name','=','BUSINESS')])
+    # analytic_tag_ids = fields.Many2one(comodel_name='account.analytic.tag', string='Location', domain=[('analytic_dimension_id.name','=','LOCATION')])
+    # bisnis = fields.Many2one(comodel_name='account.analytic.tag', string='Business', domain=[('analytic_dimension_id.name','=','BUSINESS')])
     category_id = fields.Many2one(comodel_name='product.category', string='Product Category', required=False, readonly=True, states={'draft':[('readonly',False)]},track_visibility='onchange')
-    # product_request_aproval_level_ids = fields.One2many(string='Approval Level Line',ondelete="cascade", copy= True,)
     
-    @api.model
-    def find_notif_users(self,vals):
-        requesto_ids = []
-        if requesto_ids:
-                vals['message_follower_ids'] = [(0,0, {
-                    'res_model':'vit.product.request',
-                    'requesto_id':self.env['requesto_id']})]
+    # @api.model
+    # def find_notif_users(self,vals):
+    #     requesto_ids = []
+    #     if requesto_ids:
+    #             vals['message_follower_ids'] = [(0,0, {
+    #                 'res_model':'vit.product.request',
+    #                 'requesto_id':self.env['requesto_id']})]
         
-    @api.multi
-    def send_followers(self, body):
-        # to inbox followers and write notes
-        # followers = [x.requesto_id.id for x in
-        #     self.message_follower_ids]
-        self.message_post(body=body,
-            type="notification", subtype="mt_comment",
-            requesto_ids=self.requesto_id)
-        return
+    # @api.multi
+    # def send_followers(self, body):
+    #     self.message_post(body=body,
+    #         type="notification", subtype="mt_comment",
+    #         requesto_ids=self.requesto_id)
+    #     return
     
-    def send_to_channel(self, body):
-        ch_obj = self.env['mail.channel']
-        ch = ch_obj.sudo().search([('name','ilike',
-            'via, Mitchell Admin')])    
-        body = _("complete")
-        ch.message_post( attachment_ids=[], body=body,
-            content_subtype='html', message_type='comment',
-            requesto_ids=[], subtype='mail.mt_comment')
-        return True
+    # def send_to_channel(self, body):
+    #     ch_obj = self.env['mail.channel']
+    #     ch = ch_obj.sudo().search([('name','ilike',
+    #         'via, Mitchell Admin')])    
+    #     body = _("complete")
+    #     ch.message_post( attachment_ids=[], body=body,
+    #         content_subtype='html', message_type='comment',
+    #         requesto_ids=[], subtype='mail.mt_comment')
+    #     return True
 
     
     @api.multi
